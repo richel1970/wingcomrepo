@@ -1,0 +1,33 @@
+version: "3"
+services:
+
+ opencart:
+  depends_on:
+   - opencartdb
+  image: vimagick/opencart
+  expose: 
+  - 80
+  environment:
+   VIRTUAL_HOST: opencart.wingcom.local
+  links:
+    - opencartdb
+  restart: always
+
+ opencartdb:
+    image: mariadb
+    command: --max-allowed-packet=64MB
+    restart: always
+    volumes:
+      - opencartdb:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=opencart
+    env_file:
+      - ./opencartdb.env
+
+networks:
+  default:
+    external:
+      name: nginx-reverseproxy
+
+volumes:
+  opencartdb:
